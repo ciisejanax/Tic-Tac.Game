@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #2196F3, #E91E63);
+      color: white;
+    }
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      max-width: 300px;
+      margin: 20px auto;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #333;
+      font-size: 50px;
+      cursor: pointer;
+    }
+    #result-screen {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.726);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+    #result-text {
+      font-size: 36px;
+    }
+    #new-game-button {
+      padding: 10px 20px;
+      font-size: 24px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tic-Tac</h1>
+  <div id="board"></div>
+  <div id="result-screen">
+    <div>
+      <p id="result-text">Player X wins!</p>
+      <button id="new-game-button">New Game</button>
+    </div>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const cells = [];
+    let currentPlayer = "X";
+    let gameOver = false;
+    const resultScreen = document.getElementById("result-screen");
+    const resultText = document.getElementById("result-text");
+    const newGameButton = document.getElementById("new-game-button");
+
+    // Create the Tic Tac Toe board
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cells.push(cell);
+      cell.addEventListener("click", () => onCellClick(i));
+      board.appendChild(cell);
+    }
+
+    // Handle cell click
+    function onCellClick(index) {
+      if (gameOver || cells[index].textContent !== "") return;
+
+      cells[index].textContent = currentPlayer;
+      if (checkWin(currentPlayer)) {
+        gameOver = true;
+        resultText.textContent = currentPlayer + " wins!";
+        resultScreen.style.display = "flex";
+      } else if (cells.every((cell) => cell.textContent !== "")) {
+        gameOver = true;
+        resultText.textContent = "It's a draw!";
+        resultScreen.style.display = "flex";
+      } else {
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+      }
+    }
+
+    // Check for a win
+    function checkWin(player) {
+      const winCombos = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+
+      return winCombos.some((combo) =>
+        combo.every((index) => cells[index].textContent === player)
+      );
+    }
+
+    // New game button click
+    newGameButton.addEventListener("click", () => {
+      cells.forEach((cell) => (cell.textContent = ""));
+      currentPlayer = "X";
+      gameOver = false;
+      resultScreen.style.display = "none";
+    });
+  </script>
+</body>
+</html>
